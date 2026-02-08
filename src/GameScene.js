@@ -51,7 +51,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     // ── Gold ────────────────────────────────────────────────
-    this.gold = 200;
+    this.gold = 100;
     this.goldText = this.add.text(16, 16, '', { fontSize: '20px', color: '#FFD700' });
     this.updateGoldText();
 
@@ -60,7 +60,7 @@ export class GameScene extends Phaser.Scene {
       delay: 1000,
       loop: true,
       callback: () => {
-        this.gold += 10;
+        this.gold += 5;
         this.updateGoldText();
       },
     });
@@ -234,7 +234,7 @@ export class GameScene extends Phaser.Scene {
   killUnit(unit) {
     if (unit.hpBar) unit.hpBar.destroy();
     // Award gold for killing enemies
-    if (unit.faction === 'enemy') this.gold += 20;
+    if (unit.faction === 'enemy') this.gold += 10;
     this.updateGoldText();
     unit.destroy();
   }
