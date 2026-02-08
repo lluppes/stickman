@@ -12,6 +12,8 @@ const UNIT_TYPES = [
 
 const ENEMY_SPAWN_INTERVAL = 5000;
 
+const textureKey = (typeName, faction) => `${typeName.toLowerCase()}_${faction}`;
+
 const BASE_HP = 500;
 
 export class GameScene extends Phaser.Scene {
@@ -20,6 +22,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.generateStickmanTextures();
+
     // ── Ground ──────────────────────────────────────────────
     const ground = this.add.rectangle(GAME_W / 2, GROUND_Y + 40, GAME_W, 80, 0x3d8b37);
     this.physics.add.existing(ground, true); // static body
@@ -111,6 +115,212 @@ export class GameScene extends Phaser.Scene {
     this.gameOver = false;
   }
 
+  // ── Texture generation ─────────────────────────────────────
+  generateStickmanTextures() {
+    const drawFns = {
+      Archer: this.drawArcher,
+      Warrior: this.drawWarrior,
+      Spearman: this.drawSpearman,
+      Giant: this.drawGiant,
+    };
+
+    UNIT_TYPES.forEach((type) => {
+      const texW = type.width + 16;
+      const texH = type.height + 4;
+
+      [
+        { faction: 'player', color: type.color },
+        { faction: 'enemy', color: 0xff4444 },
+      ].forEach(({ faction, color }) => {
+        const g = this.add.graphics();
+        const drawFn = drawFns[type.name];
+        if (drawFn) drawFn(g, texW, texH, color);
+        g.generateTexture(textureKey(type.name, faction), texW, texH);
+        g.destroy();
+      });
+    });
+  }
+
+  drawArcher(g, w, h, color) {
+    const cx = w / 2;
+    const headR = 4;
+    const headY = 4 + headR;
+    const neckY = headY + headR;
+    const bodyEnd = h - 12;
+    const footY = h - 2;
+
+    // Head
+    g.fillStyle(color, 1);
+    g.fillCircle(cx, headY, headR);
+    // Body
+    g.lineStyle(2, color, 1);
+    g.beginPath();
+    g.moveTo(cx, neckY);
+    g.lineTo(cx, bodyEnd);
+    g.strokePath();
+    // Legs (V-shape)
+    g.beginPath();
+    g.moveTo(cx - 5, footY);
+    g.lineTo(cx, bodyEnd);
+    g.lineTo(cx + 5, footY);
+    g.strokePath();
+    // Arms
+    const armY = neckY + 6;
+    g.beginPath();
+    g.moveTo(cx - 6, armY + 4);
+    g.lineTo(cx, armY);
+    g.lineTo(cx + 6, armY - 2);
+    g.strokePath();
+    // Bow (arc on right side)
+    g.lineStyle(2, 0x8B4513, 1);
+    g.beginPath();
+    g.arc(cx + 8, armY, 8, -Math.PI * 0.6, Math.PI * 0.6, false);
+    g.strokePath();
+    // Bowstring
+    g.lineStyle(1, 0xcccccc, 1);
+    g.beginPath();
+    const bowTopX = cx + 8 + 8 * Math.cos(-Math.PI * 0.6);
+    const bowTopY = armY + 8 * Math.sin(-Math.PI * 0.6);
+    const bowBotX = cx + 8 + 8 * Math.cos(Math.PI * 0.6);
+    const bowBotY = armY + 8 * Math.sin(Math.PI * 0.6);
+    g.moveTo(bowTopX, bowTopY);
+    g.lineTo(bowBotX, bowBotY);
+    g.strokePath();
+  }
+
+  drawWarrior(g, w, h, color) {
+    const cx = w / 2;
+    const headR = 5;
+    const headY = 4 + headR;
+    const neckY = headY + headR;
+    const bodyEnd = h - 14;
+    const footY = h - 2;
+
+    // Head
+    g.fillStyle(color, 1);
+    g.fillCircle(cx, headY, headR);
+    // Body
+    g.lineStyle(2, color, 1);
+    g.beginPath();
+    g.moveTo(cx, neckY);
+    g.lineTo(cx, bodyEnd);
+    g.strokePath();
+    // Legs
+    g.beginPath();
+    g.moveTo(cx - 6, footY);
+    g.lineTo(cx, bodyEnd);
+    g.lineTo(cx + 6, footY);
+    g.strokePath();
+    // Arms
+    const armY = neckY + 6;
+    // Left arm holding shield
+    g.beginPath();
+    g.moveTo(cx - 8, armY + 2);
+    g.lineTo(cx, armY);
+    g.strokePath();
+    // Right arm raised with sword
+    g.beginPath();
+    g.moveTo(cx, armY);
+    g.lineTo(cx + 7, armY - 6);
+    g.strokePath();
+    // Sword (from right hand upward)
+    g.lineStyle(2, 0xcccccc, 1);
+    g.beginPath();
+    g.moveTo(cx + 7, armY - 6);
+    g.lineTo(cx + 9, armY - 16);
+    g.strokePath();
+    // Shield (small rect on left)
+    g.fillStyle(0x666688, 1);
+    g.fillRect(cx - 12, armY - 2, 5, 8);
+  }
+
+  drawSpearman(g, w, h, color) {
+    const cx = w / 2;
+    const headR = 5;
+    const headY = 4 + headR;
+    const neckY = headY + headR;
+    const bodyEnd = h - 16;
+    const footY = h - 2;
+
+    // Head
+    g.fillStyle(color, 1);
+    g.fillCircle(cx, headY, headR);
+    // Body
+    g.lineStyle(2, color, 1);
+    g.beginPath();
+    g.moveTo(cx, neckY);
+    g.lineTo(cx, bodyEnd);
+    g.strokePath();
+    // Legs
+    g.beginPath();
+    g.moveTo(cx - 6, footY);
+    g.lineTo(cx, bodyEnd);
+    g.lineTo(cx + 6, footY);
+    g.strokePath();
+    // Arms holding spear
+    const armY = neckY + 6;
+    g.beginPath();
+    g.moveTo(cx - 4, armY + 4);
+    g.lineTo(cx, armY);
+    g.lineTo(cx + 6, armY - 2);
+    g.strokePath();
+    // Spear shaft (long diagonal)
+    g.lineStyle(2, 0x8B4513, 1);
+    g.beginPath();
+    g.moveTo(cx + 2, armY + 8);
+    g.lineTo(cx + 10, armY - 20);
+    g.strokePath();
+    // Spear tip (triangle)
+    g.fillStyle(0xcccccc, 1);
+    g.fillTriangle(
+      cx + 10, armY - 24,
+      cx + 7, armY - 18,
+      cx + 13, armY - 18,
+    );
+  }
+
+  drawGiant(g, w, h, color) {
+    const cx = w / 2;
+    const headR = 7;
+    const headY = 4 + headR;
+    const neckY = headY + headR;
+    const bodyEnd = h - 18;
+    const footY = h - 2;
+
+    // Head
+    g.fillStyle(color, 1);
+    g.fillCircle(cx, headY, headR);
+    // Body (thicker)
+    g.lineStyle(4, color, 1);
+    g.beginPath();
+    g.moveTo(cx, neckY);
+    g.lineTo(cx, bodyEnd);
+    g.strokePath();
+    // Legs (thicker)
+    g.beginPath();
+    g.moveTo(cx - 8, footY);
+    g.lineTo(cx, bodyEnd);
+    g.lineTo(cx + 8, footY);
+    g.strokePath();
+    // Arms raised overhead holding club
+    const armY = neckY + 8;
+    g.lineStyle(3, color, 1);
+    g.beginPath();
+    g.moveTo(cx - 10, armY + 4);
+    g.lineTo(cx, armY);
+    g.lineTo(cx + 10, armY - 8);
+    g.strokePath();
+    // Club shaft (raised to the right)
+    g.lineStyle(3, 0x8B4513, 1);
+    g.beginPath();
+    g.moveTo(cx + 10, armY - 8);
+    g.lineTo(cx + 14, armY - 22);
+    g.strokePath();
+    // Club head (circle at top)
+    g.fillStyle(0x664422, 1);
+    g.fillCircle(cx + 14, armY - 25, 5);
+  }
+
   // ── Spawning ────────────────────────────────────────────────
   spawnUnit(type) {
     if (this.gameOver) return;
@@ -118,8 +328,10 @@ export class GameScene extends Phaser.Scene {
     this.gold -= type.cost;
     this.updateGoldText();
 
-    const w = this.add.rectangle(100, GROUND_Y - type.height / 2, type.width, type.height, type.color);
+    const w = this.add.sprite(100, GROUND_Y - type.height / 2, textureKey(type.name, 'player'));
     this.physics.add.existing(w);
+    w.body.setSize(type.width, type.height);
+    w.body.setOffset(8, 4);
     w.body.setCollideWorldBounds(true);
     this.warriors.add(w);
 
@@ -132,6 +344,7 @@ export class GameScene extends Phaser.Scene {
     w.faction = 'player';
     w.unitCost = type.cost;
     w.unitWidth = type.width;
+    w.unitHeight = type.height;
 
     // HP bar
     w.hpBar = this.add.rectangle(w.x, w.y - type.height / 2 - 6, type.width, 4, 0x00ff00).setDepth(1);
@@ -145,8 +358,11 @@ export class GameScene extends Phaser.Scene {
 
     const type = Phaser.Utils.Array.GetRandom(affordable);
     this.enemyGold -= type.cost;
-    const e = this.add.rectangle(GAME_W - 100, GROUND_Y - type.height / 2, type.width, type.height, 0xff4444);
+    const e = this.add.sprite(GAME_W - 100, GROUND_Y - type.height / 2, textureKey(type.name, 'enemy'));
+    e.setFlipX(true);
     this.physics.add.existing(e);
+    e.body.setSize(type.width, type.height);
+    e.body.setOffset(8, 4);
     e.body.setCollideWorldBounds(true);
     this.enemies.add(e);
 
@@ -159,6 +375,7 @@ export class GameScene extends Phaser.Scene {
     e.faction = 'enemy';
     e.unitCost = type.cost;
     e.unitWidth = type.width;
+    e.unitHeight = type.height;
 
     e.hpBar = this.add.rectangle(e.x, e.y - type.height / 2 - 6, type.width, 4, 0xff0000).setDepth(1);
   }
@@ -218,7 +435,7 @@ export class GameScene extends Phaser.Scene {
 
       // Update HP bar
       if (w.active && w.hpBar) {
-        w.hpBar.setPosition(w.x, w.y - w.height / 2 - 6);
+        w.hpBar.setPosition(w.x, w.y - w.unitHeight / 2 - 6);
         w.hpBar.width = w.unitWidth * (w.hp / w.maxHp);
       }
     });
@@ -249,7 +466,7 @@ export class GameScene extends Phaser.Scene {
       }
 
       if (e.active && e.hpBar) {
-        e.hpBar.setPosition(e.x, e.y - e.height / 2 - 6);
+        e.hpBar.setPosition(e.x, e.y - e.unitHeight / 2 - 6);
         e.hpBar.width = e.unitWidth * (e.hp / e.maxHp);
       }
     });
