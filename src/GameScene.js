@@ -6,11 +6,11 @@ const GAME_W = 1024;
 const WARRIOR_COST = 50;
 const WARRIOR_SPEED = 50;
 const WARRIOR_DAMAGE = 10; // per second
-const WARRIOR_HP = 60;
+const WARRIOR_HP = 50;
 
 const ENEMY_SPEED = 50;
-const ENEMY_DAMAGE = 8;
-const ENEMY_HP = 40;
+const ENEMY_DAMAGE = 10;
+const ENEMY_HP = 50;
 const ENEMY_SPAWN_INTERVAL = 5000;
 
 const BASE_HP = 500;
