@@ -44,7 +44,6 @@ jobs:
 
     steps:
       - name: Checkout Code
-        if: ${{ inputs.runCreateInfra }}
         uses: actions/checkout@v4
 
       - name: Download artifact from build job
