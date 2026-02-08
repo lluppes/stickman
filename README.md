@@ -11,11 +11,14 @@ We're not trying to make an exact copy of any existing game. Instead, we're buil
 ## How to play
 
 - You have a base on the left. The enemy has a base on the right.
-- Spend gold to spawn warriors that march toward the enemy base.
+- Spend gold to spawn units that march toward the enemy base.
+- Choose from 4 unit types: Archer, Warrior, Spearman, and Giant — each with different stats and costs.
 - Enemy units spawn automatically and march toward your base.
 - When opposing units meet, they fight.
 - Destroy the enemy base to win. If your base falls, you lose.
 - Gold is earned passively over time and by killing enemy units.
+- Use arrow keys to scroll across the 3072px arena.
+- Click the music note in the top-right to mute/unmute background music.
 
 ## Getting started
 
@@ -35,6 +38,20 @@ The goal is to eventually host this game on [www.luppes.com](http://www.luppes.c
 **Nathan Ford** — dad and developer, here to help bring Teddy's ideas to life.
 
 This is also the first project Teddy and Nathan ever built using [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code).
+
+## Unit types
+
+| Unit     | Cost | HP  | Damage | Speed |
+|----------|------|-----|--------|-------|
+| Archer   | 25   | 25  | 15     | 50    |
+| Warrior  | 50   | 50  | 10     | 50    |
+| Spearman | 75   | 65  | 12     | 60    |
+| Giant    | 150  | 150 | 20     | 30    |
+
+## Version history
+
+- **v1** — Initial game with basic mechanics, single unit type, colored rectangles
+- **v2** — 4 unit types with procedural stickman sprites, scrollable arena, enemy AI with gold budget, background music with mute toggle, kill rewards
 
 ## Tech stack
 
